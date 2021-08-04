@@ -31,3 +31,4 @@ As Threads devem ser executadas em paralelo com as seguintes definições:
 * Depois que o array **Chave** estiver totalmente preenchido, deve ser impresso, e também devem ser impressos os contadores de pares e ímpares.
 
 *date: 2021-08-04*
+*Marcio Vinicius*
