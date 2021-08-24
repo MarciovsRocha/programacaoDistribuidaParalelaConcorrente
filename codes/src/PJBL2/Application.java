@@ -10,8 +10,8 @@ public class Application {
 
 
 
-        Gerador generator = new Gerador(semaphoreA,pipeline);
-        Padronizador padronizador = new Padronizador(semaphoreB,pipeline);
+        //Gerador generator = new Gerador(semaphoreA,pipeline);
+        //Padronizador padronizador = new Padronizador(semaphoreB,pipeline);
 
 
     }

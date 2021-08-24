@@ -1,4 +1,4 @@
-import java.util.Thread;
+package ProdutorConsumidor;// import java.util.Thread;
 
 public class Fabricante extends Thread {
     

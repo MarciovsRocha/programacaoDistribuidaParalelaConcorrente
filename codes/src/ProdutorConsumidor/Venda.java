@@ -1,3 +1,5 @@
+package ProdutorConsumidor;
+
 public class Venda {
     // nome da loja + numero sequencial fornecido pela loja
     private String id; 

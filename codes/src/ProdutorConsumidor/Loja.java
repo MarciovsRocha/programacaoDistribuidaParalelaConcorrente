@@ -1,23 +1,34 @@
-import java.io.RandomAccessFile;
+package ProdutorConsumidor;
+
+import java.util.Random;
 
 public class Loja extends Thread {
     private String nome;
     private static int idSequencial;
     private static String catalogo[];
+    private int pedidos;
+    private FilaVenda filaVenda;
 
     
-    public Loja(String nome, int pedidos, Fila FilaVenda, String cat[]) {
+    public Loja(String nome, int pedidos, FilaVenda FilaVenda, String cat[]) {
         idSequencial = 0;
         this.nome = nome;
         this.pedidos = pedidos;
-        this.FilaVenda = filaVenda;
+        this.filaVenda = filaVenda;
         catalogo = cat;
+    }
+
+    public Loja(String nome){
+        this.nome = nome;
+        this.pedidos = 0;
+        this.filaVenda = null; // fix this thing
     }
 
 
     // cria um objeto da classe Venda
     public Venda novaVenda(String produto) {
-        return new Venda(nome,idSequencial++,produto);
+        this.idSequencial++;
+        return new Venda(nome, String.valueOf(idSequencial) , produto);
     }
 
     
@@ -28,9 +39,9 @@ public class Loja extends Thread {
                 Thread.sleep(2000);
                 //criar compra e inserir na fila
                 String produtoAleatorio = catalogo[new Random().nextInt(catalogo.length)];
-                FilaVenda.insereVendaNaFila(novaVenda(produtoAleatorio));
+                filaVenda.insereVendaNaFila(novaVenda(produtoAleatorio));
 
-                filaVenda.insere(p);
+                //filaVenda.insere(p);
             }
 
         } catch(Exception e) {e.printStackTrace();}

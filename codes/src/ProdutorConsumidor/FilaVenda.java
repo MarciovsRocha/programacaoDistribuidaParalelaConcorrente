@@ -1,3 +1,8 @@
+package ProdutorConsumidor;
+
+
+import java.util.ArrayList;
+
 class FilaVenda {
 
     private static ArrayList<Venda> fila = new ArrayList<Venda>();
@@ -11,5 +16,9 @@ class FilaVenda {
     public static void retiraVendaDaFila() {
         fila.remove(0);
     }
-    
+
+    public void insere(){
+        // fix this thing
+    }
+
 }
