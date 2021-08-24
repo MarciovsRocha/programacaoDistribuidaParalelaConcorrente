@@ -10,7 +10,7 @@ public class Loja extends Thread {
     private FilaVenda filaVenda;
 
     
-    public Loja(String nome, int pedidos, FilaVenda FilaVenda, String cat[]) {
+    public Loja(String nome, int pedidos, FilaVenda filaVenda, String cat[]) {
         idSequencial = 0;
         this.nome = nome;
         this.pedidos = pedidos;
