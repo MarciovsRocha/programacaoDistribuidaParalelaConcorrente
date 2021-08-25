@@ -18,3 +18,8 @@ Separação de Implementação de classes:
 * Marco
     * Loja
     * Fabricante
+
+---
+**marcio**
+-> Implementação realizada:
+---
