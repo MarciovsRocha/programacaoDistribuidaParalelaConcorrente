@@ -1,27 +1,25 @@
 package ProdutorConsumidor;
 
 import java.util.Random;
+import java.util.concurrent.Semaphore;
 
 public class Loja extends Thread {
     private String nome;
-    private static int idSequencial;
-    private static String catalogo[];
-    private int pedidos;
+    private int idSequencial; // contador de vendas
+    private String catalogo[];
+    private Semaphore askIfCanAdd;
+    private Semaphore sayItWasAdded;
     private FilaVenda filaVenda;
 
     
-    public Loja(String nome, int pedidos, FilaVenda filaVenda, String cat[]) {
+    public Loja(String nome, FilaVenda filaVenda, String cat[],
+    Semaphore semaphore1, Semaphore semaphore2) {
         idSequencial = 0;
         this.nome = nome;
-        this.pedidos = pedidos;
         this.filaVenda = filaVenda;
-        catalogo = cat;
-    }
-
-    public Loja(String nome){
-        this.nome = nome;
-        this.pedidos = 0;
-        this.filaVenda = null; // fix this thing
+        this.catalogo = cat;
+        this.askIfCanAdd = semaphore1;
+        this.sayItWasAdded = semaphore2;
     }
 
 
@@ -37,11 +35,11 @@ public class Loja extends Thread {
         try {
             while(true) {
                 Thread.sleep(2000);
-                //criar compra e inserir na fila
-                String produtoAleatorio = catalogo[new Random().nextInt(catalogo.length)];
-                filaVenda.insereVendaNaFila(novaVenda(produtoAleatorio));
-
-                //filaVenda.insere(p);
+                askIfCanAdd.acquire();
+                    //criar compra e inserir na fila
+                    String produtoAleatorio = catalogo[new Random().nextInt(catalogo.length)];
+                    filaVenda.insereVendaNaFila(novaVenda(produtoAleatorio));
+                sayItWasAdded.release();
             }
 
         } catch(Exception e) {e.printStackTrace();}
