@@ -1,47 +1,54 @@
-package ProdutorConsumidor;// import java.util.Thread;
+package codigo;
 
 import java.util.concurrent.Semaphore;
 
 public class Fabricante extends Thread {
     private String nome;
-    private Semaphore askIfTheresSale;
-    private Semaphore saleIsBeingProduced;
-    private Semaphore askIfCanProduce;
-    private Semaphore sayItsProduced;
+
+    private Semaphore espacoParaProducao;
+    private Semaphore perguntaSeTemVendaNaFila;
+    private Semaphore espacoNaFilaDeEntrega;
+    
     private FilaVenda filaVenda;
     private FilaEntrega filaEntrega;
 
 
-    public Fabricante(String nome, FilaVenda filaVenda, FilaEntrega filaEntrega,
-    Semaphore semaphore1, Semaphore semaphore2, 
-    Semaphore semaphore3, Semaphore semaphore4) { 
+    public Fabricante(String nome, int producaoSimultaneaMaxima,
+    FilaVenda filaVenda, FilaEntrega filaEntrega,
+    Semaphore vendasNaFila, 
+    Semaphore entregasNaFila
+    ) { 
         this.nome = nome;
+        espacoParaProducao = new Semaphore(producaoSimultaneaMaxima);
         this.filaVenda = filaVenda;
         this.filaEntrega = filaEntrega;
-        this.askIfTheresSale = semaphore1;
-        this.saleIsBeingProduced = semaphore2;
-        this.askIfCanProduce = semaphore3;
-        this.sayItsProduced = semaphore4;
-
+        this.perguntaSeTemVendaNaFila = vendasNaFila;
+        this.espacoNaFilaDeEntrega = entregasNaFila;
     }
 
-    // ver uma venda e criar uma entrega
-    
+
+    @Override
+    public String toString() {
+        return "Fabricante [nome=" + nome + "]";
+    }
+
 
     public void run() {
         try {
             while(true) {
-                Thread.sleep(2000);
-                askIfTheresSale.acquire();
-                askIfCanProduce.acquire();
+                // ver se pode fazer mais uma produção simultânea
+                espacoParaProducao.acquire();
+                perguntaSeTemVendaNaFila.acquire();
                     // fabricante remove compra da fila
-                    Entrega entrega = filaVenda.retiraVendaDaFila();
-                    filaEntrega.insereEntregaNaFila(entrega);
-                saleIsBeingProduced.release();
-                sayItsProduced.release();
-
+                    Venda venda = filaVenda.retiraVendaDaFila();
+                    // cria uma fabricação
+                    Fabricacao fabricacao = new Fabricacao(filaEntrega, venda, espacoParaProducao, espacoNaFilaDeEntrega);
+                    // inicia fabricação
+                    fabricacao.start();
             }
 
         } catch(Exception e) {e.printStackTrace();}
     }
+
+    
 }

@@ -7,26 +7,36 @@ public class Loja extends Thread {
     private String nome;
     private int idSequencial; // contador de vendas
     private String catalogo[];
-    private Semaphore askIfCanAdd;
-    private Semaphore sayItWasAdded;
+    private Semaphore novaVendaEstaNaFila;
     private FilaVenda filaVenda;
+    private Random r = new Random();
 
     
-    public Loja(String nome, FilaVenda filaVenda, String cat[],
-    Semaphore semaphore1, Semaphore semaphore2) {
+    public Loja(String nome, String cat[],
+    FilaVenda filaVenda, FilaEntrega filaEntrega, 
+    Semaphore vendasNaFila) {
         idSequencial = 0;
         this.nome = nome;
-        this.filaVenda = filaVenda;
         this.catalogo = cat;
-        this.askIfCanAdd = semaphore1;
-        this.sayItWasAdded = semaphore2;
+        this.filaVenda = filaVenda;
+        this.novaVendaEstaNaFila = vendasNaFila;
     }
 
 
-    // cria um objeto da classe Venda
-    public Venda novaVenda(String produto) {
+    private Venda novaVenda(String produto) {
         this.idSequencial++;
         return new Venda(nome, String.valueOf(idSequencial) , produto);
+    }
+
+
+    private Venda novaVendaAleatoria() {
+        String produtoAleatorio = catalogo[new Random().nextInt(catalogo.length)];
+        return novaVenda(produtoAleatorio);
+    }
+
+
+    private int tempoEntreVendas() {
+        return r.nextInt(1500-1000)+1000;
     }
 
     
@@ -34,12 +44,14 @@ public class Loja extends Thread {
     public void run() {
         try {
             while(true) {
-                Thread.sleep(2000);
-                askIfCanAdd.acquire();
+                // tempo entre vendas
+                Thread.sleep(tempoEntreVendas());
+                //perguntaSeTemEspacoNaFila.acquire(); // se for 0, trava aqui até aumentar o valor
                     //criar compra e inserir na fila
-                    String produtoAleatorio = catalogo[new Random().nextInt(catalogo.length)];
-                    filaVenda.insereVendaNaFila(novaVenda(produtoAleatorio));
-                sayItWasAdded.release();
+                    Venda venda = novaVendaAleatoria();
+                    filaVenda.insereVendaNaFila(venda);
+                    System.out.println("inserido na fila: " + venda.toString());
+                novaVendaEstaNaFila.release(); // 
             }
 
         } catch(Exception e) {e.printStackTrace();}

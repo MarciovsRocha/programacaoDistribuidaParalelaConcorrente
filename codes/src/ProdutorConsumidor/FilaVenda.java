@@ -1,6 +1,5 @@
 package ProdutorConsumidor;
 
-
 import java.util.ArrayList;
 
 class FilaVenda {
@@ -8,17 +7,12 @@ class FilaVenda {
     private static ArrayList<Venda> fila = new ArrayList<Venda>();
 
 
-    // implementa uma fila que contém instâncias da classe Venda
-    public static void insereVendaNaFila(Venda venda) {
+    public void insereVendaNaFila(Venda venda) {
         fila.add(venda);
     }
 
-    public static void retiraVendaDaFila() {
-        fila.remove(0);
-    }
-
-    public void insere(){
-        // fix this thing
+    public Venda retiraVendaDaFila() {
+        return fila.remove(0);        
     }
 
 }
